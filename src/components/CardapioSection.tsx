@@ -1,3 +1,4 @@
+import React from 'react';
 // Importando as flechas separadas
 import { FlechaEsquerda, FlechaDireita } from './Flechas'; 
 // IMPORTANDO OS DADOS ATUALIZADOS DO SEU NOVO ARQUIVO DATA
@@ -35,10 +36,12 @@ export function CardapioSection() {
               <div className="h-52 w-full overflow-hidden bg-neutral-100">
                 <img 
                   srcSet={item.srcSet} 
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 320px"
+                  // CORRIGIDO: Fornece o tamanho exato que o card ocupa no layout responsivo
+                  sizes="(max-width: 639px) 100vw, (max-width: 1023px) 45vw, 300px"
                   src={item.src} 
-                  width={item.width}
-                  height={item.height}
+                  // CORRIGIDO: Evita carregar dimensões originais gigantescas, combinando com o container h-52 (208px)
+                  width={320}
+                  height={208}
                   alt={item.alt} 
                   loading="lazy"
                   decoding="async"
