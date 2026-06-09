@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { FormEvent } from 'react'; // CORRIGIDO: Utilizando 'import type' exigido pelas regras rígidas do seu tsconfig
+import type { FormEvent } from 'react'; // Utilizando 'import type' exigido pelas regras rígidas do seu tsconfig
 import { Navbar } from '../components/Navbar';
 import { HeroSection } from '../components/HeroSection';
 import { AboutUs } from '../components/AboutUs';
@@ -8,7 +8,7 @@ import { TestimonialsSection } from '../components/TestimonialsSection';
 import { FloatingWhatsapp } from '../components/FloatingWhatsapp';
 import { Footer } from '../components/Footer';
 import { DeveloperBanner } from '../components/DeveloperBanner'; 
-import { SITE_IMAGES } from '../data/imageConfig';
+import { menuCategories } from '../data/cardapioData';
 import { SITE_CONFIG, getWhatsappLink } from '../data/config';
 
 export default function PortfolioPage() {
@@ -17,7 +17,7 @@ export default function PortfolioPage() {
   const [endereco, setEndereco] = useState('');
   const [pedido, setPedido] = useState('');
 
-  // CORRIGIDO: Evento perfeitamente tipado e aceito pelo compilador
+  // Evento perfeitamente tipado e aceito pelo compilador
   const handleWhatsAppOrder = (e: FormEvent) => {
     e.preventDefault();
     const textoMensagem = `Olá! Meu nome é ${nome}. Gostaria de pedir: ${itemSelecionado}. 
@@ -60,13 +60,15 @@ Observações: ${pedido}`;
               />
               
               <select 
+                aria-label="Selecione seu item do cardápio"
                 className="w-full p-5 bg-slate-800 border border-slate-700 rounded-2xl text-white appearance-none"
                 required
                 value={itemSelecionado}
                 onChange={(e) => setItemSelecionado(e.target.value)}
               >
                 <option value="" disabled>Selecione seu item do cardápio</option>
-                {SITE_IMAGES.categories.map((cat, idx) => (
+                {/* Mapeando os itens a partir do novo arquivo de dados */}
+                {menuCategories.map((cat, idx) => (
                   <option key={idx} value={cat.alt}>{cat.alt}</option>
                 ))}
               </select>
@@ -98,14 +100,14 @@ Observações: ${pedido}`;
             <h3 className="text-3xl font-bold mb-2">Nossa Localização</h3>
             <p className="text-slate-400 mb-6">{SITE_CONFIG.contact.address}</p>
             <div className="w-full h-[480px] rounded-2xl overflow-hidden border border-slate-700">
+              {/* CORRIGIDO: Removido o loading="lazy" para satisfazer o validador/linter do Safari antigo */}
               <iframe 
                 title="Localização Shopping Barra"
                 src={SITE_CONFIG.contact.mapLink}
                 width="100%" 
                 height="100%" 
-                style={{border:0}} 
+                className="border-none" 
                 allowFullScreen 
-                loading="lazy" 
               />
             </div>
           </div>

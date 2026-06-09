@@ -1,17 +1,9 @@
-import { SITE_IMAGES, getOptimizedImage } from '../data/imageConfig';
+// Importando as flechas separadas
+import { FlechaEsquerda, FlechaDireita } from './Flechas'; 
+// IMPORTANDO OS DADOS ATUALIZADOS DO SEU NOVO ARQUIVO DATA
+import { menuCategories } from '../data/cardapioData'; 
 
 export function CardapioSection() {
-  // CORRIGIDO: Agora passa apenas o 'item' para a função, evitando o erro de compilação do TS
-  const menuCategories = SITE_IMAGES.categories.map(item => {
-    const optimizedResult = getOptimizedImage(item);
-    return {
-      ...item, 
-      src: optimizedResult.src, 
-      loading: optimizedResult.loading,
-      decoding: optimizedResult.decoding
-    };
-  });
-
   return (
     <section id="menu" className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4">
@@ -19,63 +11,13 @@ export function CardapioSection() {
         {/* Cabeçalho */}
         <div className="text-center mb-16 flex flex-col items-center">
           
-          {/* CATEGORIA com flechas vermelhas geométricas */}
+          {/* CATEGORIA com flechas dinâmicas */}
           <div className="flex items-center justify-center gap-4 mb-4 w-full max-w-sm">
-            {/* Flecha Esquerda Vermelha */}
-            <div className="w-20 md:w-24 flex items-center text-[#e32828]">
-              <svg 
-                viewBox="0 0 400 120" 
-                className="w-full h-auto scale-x-[-1]" 
-                fill="none" 
-                stroke="currentColor" 
-                strokeWidth="4" 
-                strokeLinecap="round" 
-                strokeLinejoin="round"
-              >
-                <line x1="25" y1="60" x2="320" y2="60" />
-                <path d="M 45,60 Q 25,48 30,36 Q 40,48 61,60 Z" />
-                <path d="M 61,60 Q 41,48 46,36 Q 56,48 77,60 Z" />
-                <path d="M 77,60 Q 57,48 62,36 Q 72,48 93,60 Z" />
-                <path d="M 93,60 Q 73,48 78,36 Q 88,48 109,60 Z" />
-                <path d="M 109,60 Q 89,48 94,36 Q 104,48 125,60 Z" />
-                <path d="M 45,60 Q 25,72 30,84 Q 40,72 61,60 Z" />
-                <path d="M 61,60 Q 41,72 46,84 Q 56,72 77,60 Z" />
-                <path d="M 77,60 Q 57,72 62,84 Q 72,72 93,60 Z" />
-                <path d="M 93,60 Q 73,72 78,84 Q 88,72 109,60 Z" />
-                <path d="M 109,60 Q 89,72 94,84 Q 104,72 125,60 Z" />
-                <path d="M 320,60 Q 330,45 370,60 Q 330,75 320,60 Z" />
-              </svg>
-            </div>
-            
+            <FlechaEsquerda color="#e32828" />
             <span className="text-xs font-sans font-extrabold tracking-[0.25em] text-[#e32828] uppercase whitespace-nowrap">
               CATEGORIAS
             </span>
-            
-            {/* Flecha Direita Vermelha */}
-            <div className="w-20 md:w-24 flex items-center text-[#e32828]">
-              <svg 
-                viewBox="0 0 400 120" 
-                className="w-full h-auto" 
-                fill="none" 
-                stroke="currentColor" 
-                strokeWidth="4" 
-                strokeLinecap="round" 
-                strokeLinejoin="round"
-              >
-                <line x1="25" y1="60" x2="320" y2="60" />
-                <path d="M 45,60 Q 25,48 30,36 Q 40,48 61,60 Z" />
-                <path d="M 61,60 Q 41,48 46,36 Q 56,48 77,60 Z" />
-                <path d="M 77,60 Q 57,48 62,36 Q 72,48 93,60 Z" />
-                <path d="M 93,60 Q 73,48 78,36 Q 88,48 109,60 Z" />
-                <path d="M 109,60 Q 89,48 94,36 Q 104,48 125,60 Z" />
-                <path d="M 45,60 Q 25,72 30,84 Q 40,72 61,60 Z" />
-                <path d="M 61,60 Q 41,72 46,84 Q 56,72 77,60 Z" />
-                <path d="M 77,60 Q 57,72 62,84 Q 72,72 93,60 Z" />
-                <path d="M 93,60 Q 73,72 78,84 Q 88,72 109,60 Z" />
-                <path d="M 109,60 Q 89,72 94,84 Q 104,72 125,60 Z" />
-                <path d="M 320,60 Q 330,45 370,60 Q 330,75 320,60 Z" />
-              </svg>
-            </div>
+            <FlechaDireita color="#e32828" />
           </div>
 
           {/* Título Serifado */}
@@ -89,13 +31,17 @@ export function CardapioSection() {
           {menuCategories.map((item, i) => (
             <div key={i} className="bg-white border border-neutral-100 shadow-sm overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col">
               
-              {/* Imagem do Cardápio */}
+              {/* Imagem do Cardápio Responsiva e de Alta Performance */}
               <div className="h-52 w-full overflow-hidden bg-neutral-100">
                 <img 
+                  srcSet={item.srcSet} 
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 320px"
                   src={item.src} 
+                  width={item.width}
+                  height={item.height}
                   alt={item.alt} 
-                  loading={item.loading}
-                  decoding={item.decoding}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" 
                 />
               </div>
@@ -130,7 +76,7 @@ export function CardapioSection() {
                   </p>
                 </div>
 
-                {/* Botão Pedir Agora - Configurado para o formulário local */}
+                {/* Botão Pedir Agora */}
                 <a 
                   href="#pedido" 
                   className="text-[#e32828] font-sans font-bold text-xs tracking-wider uppercase hover:text-red-700 transition-colors inline-flex items-center gap-1 w-fit"

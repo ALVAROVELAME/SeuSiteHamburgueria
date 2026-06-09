@@ -1,34 +1,11 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import { ViteImageOptimizer } from 'vite-plugin-image-optimizer'
+import { imagetools } from 'vite-imagetools'
 
 export default defineConfig({
   plugins: [
     react(),
-    ViteImageOptimizer({
-      test: /\.(webp|svg)$/i,
-      includePublic: true,
-      logStats: true,
-      webp: {
-        quality: 75,
-        lossless: false,
-      },
-      svg: {
-        multipass: true,
-        plugins: [
-          {
-            name: 'preset-default',
-            params: {
-              overrides: {
-                removeViewBox: false,
-              },
-            },
-          } as any, // O 'as any' resolve o conflito estrito de assinatura com o svgo types
-          { name: 'removeTitle' },
-          { name: 'removeDesc' }
-        ]
-      }
-    })
+    imagetools() // Substituído pelo gerenciador de imagens responsivas automáticas
   ],
   build: {
     rollupOptions: {

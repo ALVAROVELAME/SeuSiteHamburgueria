@@ -1,7 +1,38 @@
-import { SITE_IMAGES } from '../data/imageConfig';
+
+// Interface para garantir a tipagem estrita no TypeScript
+interface TestimonialItem {
+  name: string;
+  role: string;
+  text: string;
+  rating: number;
+  avatar: string;
+}
 
 export function TestimonialsSection() {
-  const testimonials = SITE_IMAGES.testimonials || [];
+  // ARRAY LOCAL DE DEPOIMENTOS - Seguro, limpo e sem dependências fantasmas
+  const testimonials: TestimonialItem[] = [
+    {
+      name: "Carlos Eduardo",
+      role: "Cliente VIP",
+      text: "O Smash Burger Duplo é simplesmente o melhor que já comi. A carne vem no ponto perfeito e o molho artesanal da casa é viciante. Entrega super rápida!",
+      rating: 5,
+      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=120&h=120&fit=crop"
+    },
+    {
+      name: "Mariana Silva",
+      role: "Crítica Gastronômica Local",
+      text: "Uma avalanche de sabor! O Cheddar & Bacon Supreme é gigante e o bacon realmente vem muito crocante. O atendimento pelo WhatsApp também foi excelente.",
+      rating: 5,
+      avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=120&h=120&fit=crop"
+    },
+    {
+      name: "Rodrigo Ramos",
+      role: "Amante de Burgers",
+      text: "As batatas especiais e os anéis de cebola gigantes fecham o combo perfeito. A crocância é absurda, mesmo chegando por delivery. Recomendo de olhos fechados!",
+      rating: 5,
+      avatar: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?q=80&w=120&h=120&fit=crop"
+    }
+  ];
 
   return (
     <section id="testimonials" className="py-24 bg-slate-950 relative overflow-hidden">
@@ -29,7 +60,7 @@ export function TestimonialsSection() {
               className="bg-white/[0.03] backdrop-blur-md border border-white/[0.08] p-8 rounded-3xl flex flex-col justify-between hover:bg-white/[0.06] transition-all duration-500 group"
             >
               <div>
-                {/* Estrelas */}
+                {/* Estrelas baseadas na nota numérica */}
                 <div className="flex gap-1 mb-6 text-amber-500">
                   {Array.from({ length: item.rating }).map((_, idx) => (
                     <span key={idx} className="text-lg">★</span>
