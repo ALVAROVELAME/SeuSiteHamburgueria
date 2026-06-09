@@ -1,4 +1,3 @@
-import React from 'react';
 // Importando as flechas separadas
 import { FlechaEsquerda, FlechaDireita } from './Flechas'; 
 // IMPORTANDO OS DADOS ATUALIZADOS DO SEU NOVO ARQUIVO DATA
