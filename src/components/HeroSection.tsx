@@ -21,12 +21,23 @@ const heroSlides = [
 
 export function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  
+  // 1. NOVO ESTADO: Controla se a página terminou de carregar para iniciar a animação
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    // 2. Dispara a animação inicial do primeiro slide logo após o carregamento da página.
+    // O pequeno atraso de 50ms garante que o navegador registre o estado inicial oculto antes de mostrar.
+    const mountTimer = setTimeout(() => setIsMounted(true), 50);
+
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
     }, 6000);
-    return () => clearInterval(timer);
+    
+    return () => {
+      clearInterval(timer);
+      clearTimeout(mountTimer);
+    };
   }, []);
 
   const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
@@ -45,13 +56,9 @@ export function HeroSection() {
           alt={slide.image.alt}
           fetchPriority={index === 0 ? 'high' : 'auto'}
           decoding="async"
-          /* SOLUÇÃO DO PROBLEMA:
-            1. Usamos !w-full, !h-full e !object-cover com exclamação para quebrar qualquer reset de CSS global (h-auto).
-            2. Forçamos min-w-full e min-h-full para garantir que ela nunca fique menor que a tela do celular.
-            3. Removemos as propriedades HTML inline 'width' e 'height' que travavam a proporção errada no mobile.
-          */
           className={`absolute inset-0 !w-full !h-full !object-cover object-center min-w-full min-h-full transition-all duration-1000 ease-in-out ${
-            index === currentSlide ? 'opacity-100 scale-100 z-0' : 'opacity-0 scale-105 pointer-events-none'
+            // 3. A imagem de fundo também só aparece se o componente estiver montado
+            index === currentSlide && isMounted ? 'opacity-100 scale-100 z-0' : 'opacity-0 scale-105 pointer-events-none'
           }`}
         />
       ))}
@@ -61,7 +68,8 @@ export function HeroSection() {
 
       {/* 2. Conteúdos Animados Individuais por Slide */}
       {heroSlides.map((slide, index) => {
-        const isActive = index === currentSlide;
+        // 4. ATUALIZAÇÃO: O slide só é considerado ativo para animação SE o componente já montou
+        const isActive = index === currentSlide && isMounted;
         
         return (
           <div
