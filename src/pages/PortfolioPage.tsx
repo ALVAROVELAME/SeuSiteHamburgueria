@@ -11,16 +11,53 @@ import { DeveloperBanner } from '../components/DeveloperBanner';
 import { menuCategories } from '../data/cardapioData';
 import { SITE_CONFIG, getWhatsappLink } from '../data/config';
 
+// Tipagem para os itens dinâmicos do pedido
+interface ItemPedido {
+  id: number;
+  nome: string;
+  quantidade: number;
+}
+
 export default function PortfolioPage() {
   const [nome, setNome] = useState('');
-  const [itemSelecionado, setItemSelecionado] = useState('');
   const [endereco, setEndereco] = useState('');
   const [pedido, setPedido] = useState('');
+  
+  // Estado que guarda a lista de itens (inicia com 1 item vazio)
+  const [itensPedido, setItensPedido] = useState<ItemPedido[]>([
+    { id: Date.now(), nome: '', quantidade: 1 }
+  ]);
 
-  // Evento perfeitamente tipado e aceito pelo compilador
+  // Função para adicionar uma nova linha de produto
+  const adicionarItem = () => {
+    setItensPedido([...itensPedido, { id: Date.now(), nome: '', quantidade: 1 }]);
+  };
+
+  // Função para remover uma linha de produto específica
+  const removerItem = (id: number) => {
+    if (itensPedido.length === 1) return; // Garante que sempre terá pelo menos 1 campo
+    setItensPedido(itensPedido.filter(item => item.id !== id));
+  };
+
+  // Função para atualizar o nome ou a quantidade de um item específico
+  const atualizarItem = (id: number, campo: 'nome' | 'quantidade', valor: string | number) => {
+    setItensPedido(itensPedido.map(item => 
+      item.id === id ? { ...item, [campo]: valor } : item
+    ));
+  };
+
   const handleWhatsAppOrder = (e: FormEvent) => {
     e.preventDefault();
-    const textoMensagem = `Olá! Meu nome é ${nome}. Gostaria de pedir: ${itemSelecionado}. 
+    
+    // Formata a lista de itens (Ex: "2x Hamburguer Duplo")
+    const itensFormatados = itensPedido
+      .filter(item => item.nome !== '') // Ignora se o cliente deixou algum select em branco
+      .map(item => `${item.quantidade}x ${item.nome}`)
+      .join('\n  - '); // Quebra a linha e adiciona um tracinho para cada item
+      
+    const textoMensagem = `Olá! Meu nome é ${nome}. Gostaria de pedir:
+  - ${itensFormatados}
+
 Endereço de entrega: ${endereco}. 
 Observações: ${pedido}`;
     
@@ -30,26 +67,23 @@ Observações: ${pedido}`;
 
   return (
     <div className="min-h-screen">
-      {/* 1. Navbar no topo */}
       <Navbar />
 
-      {/* 2. Banner de desenvolvimento logo abaixo da Navbar */}
       <DeveloperBanner 
         whatsappLink={getWhatsappLink("Olá, Álvaro! Gostaria de um site com este modelo premium.")} 
       />
 
-      {/* 3. Restante do conteúdo */}
       <HeroSection />
-      <CardapioSection />         
+      <CardapioSection />        
       <AboutUs />
       <TestimonialsSection />
 
-      {/* Formulário + Mapa com id correspondente às âncoras do cardápio */}
       <section id="pedido" className="py-20 bg-slate-900 text-white">
         <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-12">
           <div>
             <h2 className="text-4xl font-bold mb-8">Faça seu Pedido</h2>
             <form onSubmit={handleWhatsAppOrder} className="space-y-6">
+              
               <input 
                 type="text" 
                 placeholder="Seu Nome" 
@@ -59,18 +93,72 @@ Observações: ${pedido}`;
                 onChange={(e) => setNome(e.target.value)}
               />
               
-              <select 
-                aria-label="Selecione seu item do cardápio"
-                className="w-full p-5 bg-slate-800 border border-slate-700 rounded-2xl text-white appearance-none"
-                required
-                value={itemSelecionado}
-                onChange={(e) => setItemSelecionado(e.target.value)}
-              >
-                <option value="" disabled>Selecione seu item do cardápio</option>
-                {menuCategories.map((cat) => (
-                  <option key={cat.id} value={cat.title}>{cat.title}</option>
+              {/* ÁREA DOS ITENS DINÂMICOS */}
+              <div className="space-y-4 bg-slate-800/50 p-5 rounded-2xl border border-slate-700/50">
+                <label className="text-sm font-bold text-slate-300 uppercase tracking-wider">Itens do Pedido</label>
+                
+                {itensPedido.map((item) => (
+                  <div key={item.id} className="flex gap-3 items-start">
+                    
+                    {/* Select do Produto */}
+                    <div className="flex-1">
+                      <select 
+                        aria-label="Selecione seu item do cardápio"
+                        className="w-full p-4 bg-slate-800 border border-slate-700 rounded-xl text-white appearance-none"
+                        required
+                        value={item.nome}
+                        onChange={(e) => atualizarItem(item.id, 'nome', e.target.value)}
+                      >
+                        <option value="" disabled>Selecione um item...</option>
+                        {menuCategories.map((cat) => (
+                          <option key={cat.id} value={cat.title}>{cat.title}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Input de Quantidade */}
+                    <div className="w-20 sm:w-24">
+                      <input 
+                        type="number" 
+                        min="1"
+                        placeholder="Qtd"
+                        className="w-full p-4 bg-slate-800 border border-slate-700 rounded-xl text-center text-white" 
+                        required 
+                        value={item.quantidade}
+                        onChange={(e) => atualizarItem(item.id, 'quantidade', parseInt(e.target.value) || 1)}
+                      />
+                    </div>
+
+                    {/* Botão de Remover (Só aparece se tiver mais de 1 item) */}
+                    {itensPedido.length > 1 && (
+                      <button 
+                        type="button"
+                        onClick={() => removerItem(item.id)}
+                        className="p-4 text-slate-400 hover:text-red-500 hover:bg-red-500/10 bg-slate-800 border border-slate-700 rounded-xl transition-all flex-shrink-0"
+                        title="Remover item"
+                      >
+                        <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="3 6 5 6 21 6"></polyline>
+                          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                      </button>
+                    )}
+                  </div>
                 ))}
-              </select>
+
+                {/* Botão Adicionar Mais Itens */}
+                <button 
+                  type="button" 
+                  onClick={adicionarItem}
+                  className="text-sm font-bold text-red-500 hover:text-red-400 flex items-center gap-2 transition-colors pt-2"
+                >
+                  <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg>
+                  Adicionar outro item
+                </button>
+              </div>
 
               <input 
                 type="text" 
@@ -83,7 +171,7 @@ Observações: ${pedido}`;
 
               <textarea 
                 placeholder="Alguma observação no pedido?" 
-                rows={5} 
+                rows={4} 
                 className="w-full p-5 bg-slate-800 border border-slate-700 rounded-2xl" 
                 value={pedido}
                 onChange={(e) => setPedido(e.target.value)}
@@ -106,7 +194,7 @@ Observações: ${pedido}`;
                 height="100%" 
                 className="border-none" 
                 allowFullScreen
-                loading="lazy"
+                // O loading="lazy" foi removido daqui para evitar o erro de compatibilidade do Safari
                 referrerPolicy="no-referrer-when-downgrade"
               />
             </div>

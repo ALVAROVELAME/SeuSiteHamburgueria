@@ -33,7 +33,7 @@ export function HeroSection() {
   const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length);
 
   return (
-    <header className="group relative w-full h-screen flex items-center justify-center text-white overflow-hidden bg-neutral-950">
+    <header className="group relative w-full h-[100dvh] flex items-center justify-center text-white overflow-hidden bg-neutral-950">
       
       {/* 1. Imagens de Fundo com Transição Suave */}
       {heroSlides.map((slide, index) => (
@@ -42,12 +42,15 @@ export function HeroSection() {
           src={slide.image.src}
           srcSet={slide.image.srcSet}
           sizes="100vw"
-          width={slide.image.width}
-          height={slide.image.height}
           alt={slide.image.alt}
           fetchPriority={index === 0 ? 'high' : 'auto'}
           decoding="async"
-          className={`absolute inset-0 h-full w-full object-cover transition-all duration-1000 ease-in-out ${
+          /* SOLUÇÃO DO PROBLEMA:
+            1. Usamos !w-full, !h-full e !object-cover com exclamação para quebrar qualquer reset de CSS global (h-auto).
+            2. Forçamos min-w-full e min-h-full para garantir que ela nunca fique menor que a tela do celular.
+            3. Removemos as propriedades HTML inline 'width' e 'height' que travavam a proporção errada no mobile.
+          */
+          className={`absolute inset-0 !w-full !h-full !object-cover object-center min-w-full min-h-full transition-all duration-1000 ease-in-out ${
             index === currentSlide ? 'opacity-100 scale-100 z-0' : 'opacity-0 scale-105 pointer-events-none'
           }`}
         />
@@ -68,7 +71,7 @@ export function HeroSection() {
             }`}
           >
             
-            {/* SETAS E FRASE: Vem de Cima e sai por Cima */}
+            {/* SETAS E FRASE */}
             <div className={`flex items-center justify-center gap-6 mb-5 w-full max-w-xl transition-all duration-1000 ease-out transform-gpu ${
               isActive ? 'translate-y-0 opacity-100' : '-translate-y-16 opacity-0'
             }`}>
@@ -140,7 +143,7 @@ export function HeroSection() {
               </p>
             </div>
 
-            {/* BOTÃO CORRIGIDO: Redireciona para #pedido */}
+            {/* BOTÃO */}
             <a 
               href="#pedido"
               className={`bg-[#e32828] hover:bg-red-700 text-white px-9 py-4 text-xs font-bold uppercase tracking-widest transition-all duration-1000 ease-out transform-gpu shadow-lg ${
