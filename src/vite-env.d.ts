@@ -1,5 +1,10 @@
 /// <reference types="vite/client" />
 
+declare module '*?w=*&format=*&q=*' {
+  const src: string;
+  export default src;
+}
+
 // Captura qualquer import que contenha "as=srcset" em qualquer lugar dos parâmetros de busca
 declare module '*as=srcset' {
   const srcSet: string;

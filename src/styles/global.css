@@ -9,17 +9,29 @@ body {
   @apply bg-[#FDFCFB] text-slate-900 antialiased;
   margin: 0;
   padding: 0;
-  overflow-x: hidden; /* Garante que nada que ultrapasse a largura seja visível */
-  width: 100%;
+  min-width: 320px;
 }
 
-/* 2. Utilitário para garantir espaçamento mínimo (Respiro Lateral) */
-/* Você pode aplicar a classe 'container-fluid' na sua div principal */
-.container-fluid {
-  @apply w-full px-4 md:px-8 lg:px-12 mx-auto;
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 112px;
 }
 
-/* 3. Proteção contra imagens/vídeos que estouram o layout */
+/* 2. Containers reutilizáveis para manter o mesmo ritmo responsivo no site */
+.site-container {
+  @apply w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.section-spacing {
+  @apply py-16 sm:py-20 lg:py-24;
+}
+
+/* 3. Proteção contra mídia que estoura o layout */
 img, video {
   @apply max-w-full h-auto block;
+}
+
+iframe {
+  max-width: 100%;
+  display: block;
 }

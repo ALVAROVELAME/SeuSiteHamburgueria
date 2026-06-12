@@ -1,7 +1,9 @@
 import { getWhatsappLink } from '../data/config';
+import { getResponsiveImage } from '../utils/imageLoader';
 
 export function AboutUs() {
   const whatsappLink = getWhatsappLink("Olá! Quero conhecer mais sobre a hamburgueria.");
+  const aboutImage = getResponsiveImage('about-burger.webp', 'Interior da Hamburgueria');
 
   return (
     <section id="sobre" className="py-20 bg-gray-50">
@@ -18,8 +20,14 @@ export function AboutUs() {
         {/* Container da imagem com restrição de tamanho e formato quadrado */}
         <div className="relative mx-auto w-full max-w-sm">
           <img 
-            src="https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?q=80&w=1000&auto=format&fit=crop" 
-            alt="Interior da Hamburgueria" 
+            src={aboutImage.src}
+            srcSet={aboutImage.srcSet}
+            sizes="(max-width: 768px) calc(100vw - 3rem), 384px"
+            width={aboutImage.width}
+            height={aboutImage.height}
+            alt={aboutImage.alt}
+            loading="lazy"
+            decoding="async"
             className="rounded-2xl shadow-2xl w-full aspect-square object-cover" 
           />
           <div className="absolute -bottom-6 -right-6 bg-white p-4 rounded-xl shadow-xl whitespace-nowrap">

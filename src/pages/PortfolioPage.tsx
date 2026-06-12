@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { FormEvent } from 'react'; // Utilizando 'import type' exigido pelas regras rígidas do seu tsconfig
+import type { FormEvent } from 'react';
 import { Navbar } from '../components/Navbar';
 import { HeroSection } from '../components/HeroSection';
 import { AboutUs } from '../components/AboutUs';
@@ -67,9 +67,8 @@ Observações: ${pedido}`;
                 onChange={(e) => setItemSelecionado(e.target.value)}
               >
                 <option value="" disabled>Selecione seu item do cardápio</option>
-                {/* Mapeando os itens a partir do novo arquivo de dados */}
-                {menuCategories.map((cat, idx) => (
-                  <option key={idx} value={cat.alt}>{cat.alt}</option>
+                {menuCategories.map((cat) => (
+                  <option key={cat.id} value={cat.title}>{cat.title}</option>
                 ))}
               </select>
 

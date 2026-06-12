@@ -1,79 +1,52 @@
-// 1. Declaração de tipos para os metadados do vite-imagetools
-// Isso resolve o erro de compilação do TypeScript ao acessar .src, .width e .height
-interface ImageMetadata {
-  src: string;
-  width: number;
-  height: number;
-  format: string;
-  space: string;
-  channels: number;
-  density: number;
-}
+import { getResponsiveImage } from '../utils/imageLoader';
+import type { ResponsiveImage } from '../utils/imageLoader';
 
-// Importação automática de resoluções e metadados com vite-imagetools
-import smashSrcset from '../assets/images/SmashBurgerDuplo.webp?w=400;800;1200&format=webp&q=75&as=srcset';
-import smashMetaImport from '../assets/images/SmashBurgerDuplo.webp?as=metadata';
-
-import cheddarSrcset from '../assets/images/CheddarBaconSupreme.webp?w=400;800;1200&format=webp&q=75&as=srcset';
-import cheddarMetaImport from '../assets/images/CheddarBaconSupreme.webp?as=metadata';
-
-import batataSrcset from '../assets/images/BatataFritaEspecial.webp?w=400;800;1200&format=webp&q=75&as=srcset';
-import batataMetaImport from '../assets/images/BatataFritaEspecial.webp?as=metadata';
-
-import aneisSrcset from '../assets/images/AneisDeCebolaCrocantes.webp?w=400;800;1200&format=webp&q=75&as=srcset';
-import aneisMetaImport from '../assets/images/AneisDeCebolaCrocantes.webp?as=metadata';
-
-// Realizando o cast tipado dos metadados
-const smashMeta = smashMetaImport as unknown as ImageMetadata;
-const cheddarMeta = cheddarMetaImport as unknown as ImageMetadata;
-const batataMeta = batataMetaImport as unknown as ImageMetadata;
-const aneisMeta = aneisMetaImport as unknown as ImageMetadata;
-
-export interface CardapioItem {
-  alt: string;
+export interface MenuCategory {
+  id: number;
+  title: string;
   description: string;
   rating: string;
-  srcSet: string;
-  src: string;
-  width: number;
-  height: number;
+  price: string;
+  imageFile: string;
+  imagem: ResponsiveImage;
 }
 
-export const menuCategories: CardapioItem[] = [
+const menuItems = [
   {
-    alt: "Smash Burger Duplo",
-    description: "Dois blends de 100g grelhados no ponto certo, muito queijo cheddar derretido e molho artesanal.",
-    rating: "5.0",
-    srcSet: smashSrcset,
-    src: smashMeta.src,
-    width: smashMeta.width,
-    height: smashMeta.height
+    id: 1,
+    title: 'Smash Burger Duplo',
+    description: 'Dois burgers prensados na chapa, queijo derretido, molho da casa e pao tostado.',
+    rating: '4.9',
+    price: 'R$ 32,90',
+    imageFile: 'SmashBurgerDuplo.webp',
   },
   {
-    alt: "Cheddar & Bacon Supreme",
-    description: "Blend de 150g extremamente suculento, coberto por uma avalanche de bacon crocante e creme de queijo.",
-    rating: "4.9",
-    srcSet: cheddarSrcset,
-    src: cheddarMeta.src,
-    width: cheddarMeta.width,
-    height: cheddarMeta.height
+    id: 2,
+    title: 'Cheddar Bacon Supreme',
+    description: 'Burger artesanal com cheddar cremoso, bacon crocante e cebola caramelizada.',
+    rating: '5.0',
+    price: 'R$ 36,90',
+    imageFile: 'CheddarBaconSupreme.webp',
   },
   {
-    alt: "Batata Frita Especial",
-    description: "Batatas fritas super crocantes por fora e macias por dentro, com tempero especial da casa.",
-    rating: "4.8",
-    srcSet: batataSrcset,
-    src: batataMeta.src,
-    width: batataMeta.width,
-    height: batataMeta.height
+    id: 3,
+    title: 'Batata Frita Especial',
+    description: 'Batatas sequinhas com cheddar, bacon e finalizacao temperada da casa.',
+    rating: '4.8',
+    price: 'R$ 22,90',
+    imageFile: 'BatataFritaEspecial.webp',
   },
   {
-    alt: "Anéis de Cebola Crocantes",
-    description: "Anéis de cebola gigantes empanados com uma casca grossa e super crocante, fritos na hora.",
-    rating: "4.7",
-    srcSet: aneisSrcset,
-    src: aneisMeta.src,
-    width: aneisMeta.width,
-    height: aneisMeta.height
-  }
-];
+    id: 4,
+    title: 'Aneis de Cebola Crocantes',
+    description: 'Aneis dourados, crocantes por fora e macios por dentro, com molho especial.',
+    rating: '4.8',
+    price: 'R$ 19,90',
+    imageFile: 'AneisDeCebolaCrocantes.webp',
+  },
+] satisfies Omit<MenuCategory, 'imagem'>[];
+
+export const menuCategories: MenuCategory[] = menuItems.map((item) => ({
+  ...item,
+  imagem: getResponsiveImage(item.imageFile, item.title),
+}));

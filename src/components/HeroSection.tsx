@@ -1,18 +1,19 @@
 import { useState, useEffect } from 'react';
+import { getResponsiveImage } from '../utils/imageLoader';
 
 const heroSlides = [
   {
-    src: "https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=2069&auto=format&fit=crop", 
+    image: getResponsiveImage('hero-churrasco.webp', 'Hamburgueria com comida na brasa'),
     title: "A Melhor Comida & Uma Maravilhosa",
     subtitle: "Experiência Gastronômica"
   },
   {
-    src: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=2070&auto=format&fit=crop", 
+    image: getResponsiveImage('hero-burger.webp', 'Hamburguer artesanal premium'),
     title: "Mais Sabor & Hambúrgueres",
     subtitle: "Artesanais Incomparáveis"
   },
   {
-    src: "https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=2065&auto=format&fit=crop", 
+    image: getResponsiveImage('hero-burger-close.webp', 'Hamburguer artesanal em close'),
     title: "Sabor Premium & Momentos",
     subtitle: "Inesquecíveis para Você"
   }
@@ -36,12 +37,19 @@ export function HeroSection() {
       
       {/* 1. Imagens de Fundo com Transição Suave */}
       {heroSlides.map((slide, index) => (
-        <div
+        <img
           key={index}
-          className={`absolute inset-0 bg-cover bg-center transition-all duration-1000 ease-in-out ${
+          src={slide.image.src}
+          srcSet={slide.image.srcSet}
+          sizes="100vw"
+          width={slide.image.width}
+          height={slide.image.height}
+          alt={slide.image.alt}
+          fetchPriority={index === 0 ? 'high' : 'auto'}
+          decoding="async"
+          className={`absolute inset-0 h-full w-full object-cover transition-all duration-1000 ease-in-out ${
             index === currentSlide ? 'opacity-100 scale-100 z-0' : 'opacity-0 scale-105 pointer-events-none'
           }`}
-          style={{ backgroundImage: `url(${slide.src})` }}
         />
       ))}
 

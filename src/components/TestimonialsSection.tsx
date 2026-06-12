@@ -1,11 +1,14 @@
 
+import { getResponsiveImage } from '../utils/imageLoader';
+import type { ResponsiveImage } from '../utils/imageLoader';
+
 // Interface para garantir a tipagem estrita no TypeScript
 interface TestimonialItem {
   name: string;
   role: string;
   text: string;
   rating: number;
-  avatar: string;
+  avatar: ResponsiveImage;
 }
 
 export function TestimonialsSection() {
@@ -16,21 +19,21 @@ export function TestimonialsSection() {
       role: "Cliente VIP",
       text: "O Smash Burger Duplo é simplesmente o melhor que já comi. A carne vem no ponto perfeito e o molho artesanal da casa é viciante. Entrega super rápida!",
       rating: 5,
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=120&h=120&fit=crop"
+      avatar: getResponsiveImage('avatar-carlos.webp', 'Carlos Eduardo')
     },
     {
       name: "Mariana Silva",
       role: "Crítica Gastronômica Local",
       text: "Uma avalanche de sabor! O Cheddar & Bacon Supreme é gigante e o bacon realmente vem muito crocante. O atendimento pelo WhatsApp também foi excelente.",
       rating: 5,
-      avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=120&h=120&fit=crop"
+      avatar: getResponsiveImage('avatar-mariana.webp', 'Mariana Silva')
     },
     {
       name: "Rodrigo Ramos",
       role: "Amante de Burgers",
       text: "As batatas especiais e os anéis de cebola gigantes fecham o combo perfeito. A crocância é absurda, mesmo chegando por delivery. Recomendo de olhos fechados!",
       rating: 5,
-      avatar: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?q=80&w=120&h=120&fit=crop"
+      avatar: getResponsiveImage('avatar-rodrigo.webp', 'Rodrigo Ramos')
     }
   ];
 
@@ -77,9 +80,14 @@ export function TestimonialsSection() {
               <div className="flex items-center gap-4 pt-6 border-t border-white/[0.05]">
                 <div className="relative">
                   <img 
-                    src={item.avatar} 
-                    alt={item.name} 
+                    src={item.avatar.src}
+                    srcSet={item.avatar.srcSet}
+                    sizes="48px"
+                    width={item.avatar.width}
+                    height={item.avatar.height}
+                    alt={item.avatar.alt}
                     loading="lazy"
+                    decoding="async"
                     className="w-12 h-12 rounded-full object-cover ring-2 ring-white/[0.05] group-hover:ring-red-500/50 transition-all duration-300"
                   />
                 </div>
