@@ -14,7 +14,7 @@ import { SITE_CONFIG, getWhatsappLink } from '../data/config';
 interface ItemPedido {
   id: number;
   nome: string;
-  quantidade: number;
+  quantidade: number | string; // Permite string temporária para não quebrar a digitação quando apagar tudo
 }
 
 export default function PortfolioPage() {
@@ -46,7 +46,11 @@ export default function PortfolioPage() {
     
     const itensFormatados = itensPedido
       .filter(item => item.nome !== '')
-      .map(item => `${item.quantidade}x ${item.nome}`)
+      .map(item => {
+        // Se o usuário deixou o campo vazio por acidente antes de enviar, vira 1
+        const qtdDefinitiva = parseInt(item.quantidade as string) || 1;
+        return `${qtdDefinitiva}x ${item.nome}`;
+      })
       .join('\n  - ');
       
     const textoMensagem = `Olá! Meu nome é ${nome}. Gostaria de pedir:
@@ -87,16 +91,13 @@ Observações: ${pedido}`;
                 onChange={(e) => setNome(e.target.value)}
               />
               
-              {/* CONTRASTE CORRIGIDO: Removido o bg-slate-800/50 (transparência), agora é sólido. */}
               <div className="space-y-4 bg-slate-800 p-5 rounded-2xl border border-slate-700">
-                {/* Texto clareado para slate-200 */}
                 <label className="text-sm font-bold text-slate-200 uppercase tracking-wider">Itens do Pedido</label>
                 
                 {itensPedido.map((item) => (
-                  <div key={item.id} className="flex gap-3 items-start">
+                  <div key={item.id} className="flex flex-wrap sm:flex-nowrap gap-3 items-center border-b border-slate-700/50 sm:border-0 pb-4 sm:pb-0">
                     
-                    <div className="flex-1">
-                      {/* Select usando bg-slate-900 para destacar do fundo 800 */}
+                    <div className="w-full sm:flex-1">
                       <select 
                         aria-label="Selecione seu item do cardápio"
                         className="w-full p-4 bg-slate-900 border border-slate-600 rounded-xl text-white appearance-none"
@@ -111,36 +112,48 @@ Observações: ${pedido}`;
                       </select>
                     </div>
 
-                    <div className="w-20 sm:w-24">
-                      <input 
-                        type="number" 
-                        min="1"
-                        placeholder="Qtd"
-                        className="w-full p-4 bg-slate-900 border border-slate-600 rounded-xl text-center text-white placeholder:text-slate-400" 
-                        required 
-                        value={item.quantidade}
-                        onChange={(e) => atualizarItem(item.id, 'quantidade', parseInt(e.target.value) || 1)}
-                      />
+                    <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-start">
+                      <div className="w-24">
+                        <input 
+                          type="number" 
+                          min="1"
+                          placeholder="Qtd"
+                          className="w-full p-4 bg-slate-900 border border-slate-600 rounded-xl text-center text-white placeholder:text-slate-400" 
+                          required 
+                          value={item.quantidade}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            // CONSERTO DO BUG: Se estiver em branco, deixa em branco pro celular aceitar digitação fluida. 
+                            // Caso contrário, armazena o número inteiro digitado.
+                            atualizarItem(item.id, 'quantidade', val === '' ? '' : parseInt(val) || 1);
+                          }}
+                          onBlur={() => {
+                            // Segurança extra: se o usuário sair do input e deixar em branco, redefine para 1
+                            if (item.quantidade === '') {
+                              atualizarItem(item.id, 'quantidade', 1);
+                            }
+                          }}
+                        />
+                      </div>
+
+                      {itensPedido.length > 1 && (
+                        <button 
+                          type="button"
+                          onClick={() => removerItem(item.id)}
+                          className="p-4 text-slate-300 hover:text-red-400 hover:bg-red-900/30 bg-slate-900 border border-slate-600 rounded-xl transition-all flex-shrink-0"
+                          title="Remover item"
+                        >
+                          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                          </svg>
+                        </button>
+                      )}
                     </div>
 
-                    {itensPedido.length > 1 && (
-                      <button 
-                        type="button"
-                        onClick={() => removerItem(item.id)}
-                        /* Ícone clareado para slate-300 e hover corrigido */
-                        className="p-4 text-slate-300 hover:text-red-400 hover:bg-red-900/30 bg-slate-900 border border-slate-600 rounded-xl transition-all flex-shrink-0"
-                        title="Remover item"
-                      >
-                        <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                          <polyline points="3 6 5 6 21 6"></polyline>
-                          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                        </svg>
-                      </button>
-                    )}
                   </div>
                 ))}
 
-                {/* CONTRASTE CORRIGIDO: text-red-500 mudado para text-red-400 (mais claro no fundo escuro) */}
                 <button 
                   type="button" 
                   onClick={adicionarItem}
@@ -179,11 +192,10 @@ Observações: ${pedido}`;
 
           <div>
             <h3 className="text-3xl font-bold mb-2">Nossa Localização</h3>
-            {/* Texto clareado para slate-300 */}
             <p className="text-slate-300 mb-6">{SITE_CONFIG.contact.address}</p>
             <div className="w-full h-[320px] sm:h-[420px] lg:h-[480px] rounded-2xl overflow-hidden border border-slate-700 bg-slate-800">
               <iframe 
-                title="Localização do estabelecimento"
+                title="Localização do establishmento"
                 src={SITE_CONFIG.contact.mapLink}
                 width="100%" 
                 height="100%" 
