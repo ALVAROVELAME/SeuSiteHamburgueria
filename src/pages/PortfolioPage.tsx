@@ -11,7 +11,6 @@ import { DeveloperBanner } from '../components/DeveloperBanner';
 import { menuCategories } from '../data/cardapioData';
 import { SITE_CONFIG, getWhatsappLink } from '../data/config';
 
-// Tipagem para os itens dinâmicos do pedido
 interface ItemPedido {
   id: number;
   nome: string;
@@ -23,23 +22,19 @@ export default function PortfolioPage() {
   const [endereco, setEndereco] = useState('');
   const [pedido, setPedido] = useState('');
   
-  // Estado que guarda a lista de itens (inicia com 1 item vazio)
   const [itensPedido, setItensPedido] = useState<ItemPedido[]>([
     { id: Date.now(), nome: '', quantidade: 1 }
   ]);
 
-  // Função para adicionar uma nova linha de produto
   const adicionarItem = () => {
     setItensPedido([...itensPedido, { id: Date.now(), nome: '', quantidade: 1 }]);
   };
 
-  // Função para remover uma linha de produto específica
   const removerItem = (id: number) => {
-    if (itensPedido.length === 1) return; // Garante que sempre terá pelo menos 1 campo
+    if (itensPedido.length === 1) return;
     setItensPedido(itensPedido.filter(item => item.id !== id));
   };
 
-  // Função para atualizar o nome ou a quantidade de um item específico
   const atualizarItem = (id: number, campo: 'nome' | 'quantidade', valor: string | number) => {
     setItensPedido(itensPedido.map(item => 
       item.id === id ? { ...item, [campo]: valor } : item
@@ -49,11 +44,10 @@ export default function PortfolioPage() {
   const handleWhatsAppOrder = (e: FormEvent) => {
     e.preventDefault();
     
-    // Formata a lista de itens (Ex: "2x Hamburguer Duplo")
     const itensFormatados = itensPedido
-      .filter(item => item.nome !== '') // Ignora se o cliente deixou algum select em branco
+      .filter(item => item.nome !== '')
       .map(item => `${item.quantidade}x ${item.nome}`)
-      .join('\n  - '); // Quebra a linha e adiciona um tracinho para cada item
+      .join('\n  - ');
       
     const textoMensagem = `Olá! Meu nome é ${nome}. Gostaria de pedir:
   - ${itensFormatados}
@@ -87,24 +81,25 @@ Observações: ${pedido}`;
               <input 
                 type="text" 
                 placeholder="Seu Nome" 
-                className="w-full p-5 bg-slate-800 border border-slate-700 rounded-2xl" 
+                className="w-full p-5 bg-slate-800 border border-slate-700 rounded-2xl text-white placeholder:text-slate-400" 
                 required 
                 value={nome}
                 onChange={(e) => setNome(e.target.value)}
               />
               
-              {/* ÁREA DOS ITENS DINÂMICOS */}
-              <div className="space-y-4 bg-slate-800/50 p-5 rounded-2xl border border-slate-700/50">
-                <label className="text-sm font-bold text-slate-300 uppercase tracking-wider">Itens do Pedido</label>
+              {/* CONTRASTE CORRIGIDO: Removido o bg-slate-800/50 (transparência), agora é sólido. */}
+              <div className="space-y-4 bg-slate-800 p-5 rounded-2xl border border-slate-700">
+                {/* Texto clareado para slate-200 */}
+                <label className="text-sm font-bold text-slate-200 uppercase tracking-wider">Itens do Pedido</label>
                 
                 {itensPedido.map((item) => (
                   <div key={item.id} className="flex gap-3 items-start">
                     
-                    {/* Select do Produto */}
                     <div className="flex-1">
+                      {/* Select usando bg-slate-900 para destacar do fundo 800 */}
                       <select 
                         aria-label="Selecione seu item do cardápio"
-                        className="w-full p-4 bg-slate-800 border border-slate-700 rounded-xl text-white appearance-none"
+                        className="w-full p-4 bg-slate-900 border border-slate-600 rounded-xl text-white appearance-none"
                         required
                         value={item.nome}
                         onChange={(e) => atualizarItem(item.id, 'nome', e.target.value)}
@@ -116,25 +111,24 @@ Observações: ${pedido}`;
                       </select>
                     </div>
 
-                    {/* Input de Quantidade */}
                     <div className="w-20 sm:w-24">
                       <input 
                         type="number" 
                         min="1"
                         placeholder="Qtd"
-                        className="w-full p-4 bg-slate-800 border border-slate-700 rounded-xl text-center text-white" 
+                        className="w-full p-4 bg-slate-900 border border-slate-600 rounded-xl text-center text-white placeholder:text-slate-400" 
                         required 
                         value={item.quantidade}
                         onChange={(e) => atualizarItem(item.id, 'quantidade', parseInt(e.target.value) || 1)}
                       />
                     </div>
 
-                    {/* Botão de Remover (Só aparece se tiver mais de 1 item) */}
                     {itensPedido.length > 1 && (
                       <button 
                         type="button"
                         onClick={() => removerItem(item.id)}
-                        className="p-4 text-slate-400 hover:text-red-500 hover:bg-red-500/10 bg-slate-800 border border-slate-700 rounded-xl transition-all flex-shrink-0"
+                        /* Ícone clareado para slate-300 e hover corrigido */
+                        className="p-4 text-slate-300 hover:text-red-400 hover:bg-red-900/30 bg-slate-900 border border-slate-600 rounded-xl transition-all flex-shrink-0"
                         title="Remover item"
                       >
                         <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
@@ -146,11 +140,11 @@ Observações: ${pedido}`;
                   </div>
                 ))}
 
-                {/* Botão Adicionar Mais Itens */}
+                {/* CONTRASTE CORRIGIDO: text-red-500 mudado para text-red-400 (mais claro no fundo escuro) */}
                 <button 
                   type="button" 
                   onClick={adicionarItem}
-                  className="text-sm font-bold text-red-500 hover:text-red-400 flex items-center gap-2 transition-colors pt-2"
+                  className="text-sm font-bold text-red-400 hover:text-red-300 flex items-center gap-2 transition-colors pt-2"
                 >
                   <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -163,7 +157,7 @@ Observações: ${pedido}`;
               <input 
                 type="text" 
                 placeholder="Endereço de Entrega (Rua, Número, Bairro)" 
-                className="w-full p-5 bg-slate-800 border border-slate-700 rounded-2xl" 
+                className="w-full p-5 bg-slate-800 border border-slate-700 rounded-2xl text-white placeholder:text-slate-400" 
                 required 
                 value={endereco}
                 onChange={(e) => setEndereco(e.target.value)}
@@ -172,12 +166,12 @@ Observações: ${pedido}`;
               <textarea 
                 placeholder="Alguma observação no pedido?" 
                 rows={4} 
-                className="w-full p-5 bg-slate-800 border border-slate-700 rounded-2xl" 
+                className="w-full p-5 bg-slate-800 border border-slate-700 rounded-2xl text-white placeholder:text-slate-400" 
                 value={pedido}
                 onChange={(e) => setPedido(e.target.value)}
               ></textarea>
               
-              <button type="submit" className="w-full bg-red-600 py-6 rounded-2xl font-bold text-xl hover:bg-red-700 transition-all">
+              <button type="submit" className="w-full bg-red-600 py-6 rounded-2xl font-bold text-xl hover:bg-red-700 text-white transition-all">
                 ENVIAR PEDIDO 📲
               </button>
             </form>
@@ -185,16 +179,16 @@ Observações: ${pedido}`;
 
           <div>
             <h3 className="text-3xl font-bold mb-2">Nossa Localização</h3>
-            <p className="text-slate-400 mb-6">{SITE_CONFIG.contact.address}</p>
+            {/* Texto clareado para slate-300 */}
+            <p className="text-slate-300 mb-6">{SITE_CONFIG.contact.address}</p>
             <div className="w-full h-[320px] sm:h-[420px] lg:h-[480px] rounded-2xl overflow-hidden border border-slate-700 bg-slate-800">
               <iframe 
-                title="Localização Shopping Barra"
+                title="Localização do estabelecimento"
                 src={SITE_CONFIG.contact.mapLink}
                 width="100%" 
                 height="100%" 
                 className="border-none" 
                 allowFullScreen
-                // O loading="lazy" foi removido daqui para evitar o erro de compatibilidade do Safari
                 referrerPolicy="no-referrer-when-downgrade"
               />
             </div>
