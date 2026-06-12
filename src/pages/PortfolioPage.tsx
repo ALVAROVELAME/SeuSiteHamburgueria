@@ -14,7 +14,7 @@ import { SITE_CONFIG, getWhatsappLink } from '../data/config';
 interface ItemPedido {
   id: number;
   nome: string;
-  quantidade: number | string;
+  quantidade: number | string; // Permite string temporária para não quebrar a digitação quando apagar tudo
 }
 
 export default function PortfolioPage() {
@@ -27,7 +27,6 @@ export default function PortfolioPage() {
   ]);
 
   const adicionarItem = () => {
-    // ERRO CORRIGIDO: Removido o 'grandfather' que não existia na interface
     setItensPedido([...itensPedido, { id: Date.now(), nome: '', quantidade: 1 }]);
   };
 
@@ -48,28 +47,17 @@ export default function PortfolioPage() {
     const itensFormatados = itensPedido
       .filter(item => item.nome !== '')
       .map(item => {
+        // Se o usuário deixou o campo vazio por acidente antes de enviar, vira 1
         const qtdDefinitiva = parseInt(item.quantidade as string) || 1;
-        return `▫️ *${qtdDefinitiva}x* ${item.nome}`;
+        return `${qtdDefinitiva}x ${item.nome}`;
       })
-      .join('\n');
+      .join('\n  - ');
       
-    const textoMensagem = `🔔 *NOVO PEDIDO RECEBIDO* 🔔
-----------------------------------
+    const textoMensagem = `Olá! Meu nome é ${nome}. Gostaria de pedir:
+  - ${itensFormatados}
 
-👤 *CLIENTE*
-• *Nome:* ${nome}
-
-🛒 *ITENS DO PEDIDO*
-${itensFormatados}
-
-📍 *ENTREGA*
-• *Endereço:* ${endereco}
-
-💡 *OBSERVAÇÕES*
-${pedido.trim() ? `• ${pedido}` : '• _Nenhuma observação_'}
-
-----------------------------------
-📌 _Pedido gerado via Website_`;
+Endereço de entrega: ${endereco}. 
+Observações: ${pedido}`;
     
     const url = getWhatsappLink(textoMensagem);
     window.open(url, '_blank');
@@ -135,9 +123,12 @@ ${pedido.trim() ? `• ${pedido}` : '• _Nenhuma observação_'}
                           value={item.quantidade}
                           onChange={(e) => {
                             const val = e.target.value;
+                            // CONSERTO DO BUG: Se estiver em branco, deixa em branco pro celular aceitar digitação fluida. 
+                            // Caso contrário, armazena o número inteiro digitado.
                             atualizarItem(item.id, 'quantidade', val === '' ? '' : parseInt(val) || 1);
                           }}
                           onBlur={() => {
+                            // Segurança extra: se o usuário sair do input e deixar em branco, redefine para 1
                             if (item.quantidade === '') {
                               atualizarItem(item.id, 'quantidade', 1);
                             }
@@ -204,7 +195,7 @@ ${pedido.trim() ? `• ${pedido}` : '• _Nenhuma observação_'}
             <p className="text-slate-300 mb-6">{SITE_CONFIG.contact.address}</p>
             <div className="w-full h-[320px] sm:h-[420px] lg:h-[480px] rounded-2xl overflow-hidden border border-slate-700 bg-slate-800">
               <iframe 
-                title="Localização do estabelecimento"
+                title="Localização do establishmento"
                 src={SITE_CONFIG.contact.mapLink}
                 width="100%" 
                 height="100%" 
