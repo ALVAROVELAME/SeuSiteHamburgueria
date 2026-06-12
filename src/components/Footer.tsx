@@ -42,9 +42,9 @@ export function Footer() {
           <div>
             <h3 className="text-white font-bold mb-6 uppercase tracking-widest text-sm">Links</h3>
             <ul className="space-y-3 text-sm">
-              <li className="hover:text-red-500 cursor-pointer transition-colors">Cardápio</li>
-              <li className="hover:text-red-500 cursor-pointer transition-colors">Nossa História</li>
-              <li className="hover:text-red-500 cursor-pointer transition-colors">Localização</li>
+              <li className="hover:text-red-400 cursor-pointer transition-colors">Cardápio</li>
+              <li className="hover:text-red-400 cursor-pointer transition-colors">Nossa História</li>
+              <li className="hover:text-red-400 cursor-pointer transition-colors">Localização</li>
             </ul>
           </div>
 
@@ -52,7 +52,8 @@ export function Footer() {
             <h3 className="text-white font-bold mb-6 uppercase tracking-widest text-sm">Contato</h3>
             <div className="space-y-3 text-sm">
               <p>Shopping Barra, Loja 45<br/>Salvador - BA</p>
-              <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="block text-red-600 font-bold hover:text-white transition-colors">
+              {/* Alterado de text-red-600 para text-red-400 para corrigir o contraste */}
+              <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="block text-red-400 font-bold hover:text-white transition-colors">
                 (75) 9933-1557
               </a>
             </div>
