@@ -98,15 +98,16 @@ Observações: ${pedido}`;
           <div>
             <h3 className="text-3xl font-bold mb-2">Nossa Localização</h3>
             <p className="text-slate-400 mb-6">{SITE_CONFIG.contact.address}</p>
-            <div className="w-full h-[480px] rounded-2xl overflow-hidden border border-slate-700">
-              {/* CORRIGIDO: Removido o loading="lazy" para satisfazer o validador/linter do Safari antigo */}
+            <div className="w-full h-[320px] sm:h-[420px] lg:h-[480px] rounded-2xl overflow-hidden border border-slate-700 bg-slate-800">
               <iframe 
                 title="Localização Shopping Barra"
                 src={SITE_CONFIG.contact.mapLink}
                 width="100%" 
                 height="100%" 
                 className="border-none" 
-                allowFullScreen 
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
               />
             </div>
           </div>

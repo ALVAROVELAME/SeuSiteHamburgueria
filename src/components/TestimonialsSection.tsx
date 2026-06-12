@@ -92,8 +92,8 @@ export function TestimonialsSection() {
                   />
                 </div>
                 <div>
-                  <h4 className="font-sans font-bold text-sm text-white">{item.name}</h4>
-                  <p className="text-[11px] uppercase tracking-widest text-slate-500">{item.role}</p>
+                  <p className="font-sans font-bold text-sm text-white">{item.name}</p>
+                  <p className="text-[11px] uppercase tracking-widest text-slate-400">{item.role}</p>
                 </div>
               </div>
             </div>

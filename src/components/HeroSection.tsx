@@ -54,7 +54,7 @@ export function HeroSection() {
       ))}
 
       {/* Máscara escura de fundo */}
-      <div className="absolute inset-0 bg-black/60 z-10" />
+      <div className="absolute inset-0 bg-black/75 z-10" />
 
       {/* 2. Conteúdos Animados Individuais por Slide */}
       {heroSlides.map((slide, index) => {
@@ -156,6 +156,7 @@ export function HeroSection() {
       {/* 3. Controles das Setas Laterais */}
       <button 
         onClick={prevSlide} 
+        aria-label="Slide anterior"
         className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 w-12 h-12 border-2 border-white bg-white/10 hover:bg-white/30 text-white rounded-full flex items-center justify-center transition-all duration-300 z-30 backdrop-blur-xs opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto"
       >
         <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 19l-7-7 7-7" /></svg>
@@ -163,6 +164,7 @@ export function HeroSection() {
 
       <button 
         onClick={nextSlide} 
+        aria-label="Próximo slide"
         className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 w-12 h-12 border-2 border-white bg-white/10 hover:bg-white/30 text-white rounded-full flex items-center justify-center transition-all duration-300 z-30 backdrop-blur-xs opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto"
       >
         <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 5l7 7-7 7" /></svg>

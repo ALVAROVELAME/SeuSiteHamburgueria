@@ -14,13 +14,13 @@ interface ImageMetadata {
 const imageSources = import.meta.glob<string>('../assets/images/**/*.{jpg,jpeg,png,webp}', {
   eager: true,
   import: 'default',
-  query: '?w=900&format=webp&q=78',
+  query: '?w=768&format=webp&q=78',
 });
 
 const imageSrcSets = import.meta.glob<string>('../assets/images/**/*.{jpg,jpeg,png,webp}', {
   eager: true,
   import: 'default',
-  query: '?w=360;640;900;1200&format=avif;webp&q=78&as=srcset',
+  query: '?w=320;480;640;768;960;1200;1600&format=avif;webp&q=78&as=srcset',
 });
 
 const imageMetadata = import.meta.glob<ImageMetadata>('../assets/images/**/*.{jpg,jpeg,png,webp}', {
