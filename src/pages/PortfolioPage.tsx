@@ -115,18 +115,38 @@ export default function PortfolioPage() {
     
     const itensFormatados = itensPedido
       .filter(item => item.nome !== '')
-      .map(item => {
-        // Se o usuário deixou o campo vazio por acidente antes de enviar, vira 1
+      .map((item, index) => {
         const qtdDefinitiva = parseInt(item.quantidade as string) || 1;
-        return `${qtdDefinitiva}x ${item.nome}`;
+        return `${index + 1}. ${qtdDefinitiva}x ${item.nome}`;
       })
-      .join('\n  - ');
-      
-    const textoMensagem = `Olá! Meu nome é ${nome}. Gostaria de pedir:
-  - ${itensFormatados}
+      .join('\n');
 
-Endereço de entrega: ${endereco}. 
-Observações: ${pedido}`;
+    const observacoes = pedido.trim()
+      ? `\n📝 *Observações:*\n${pedido.trim()}`
+      : '';
+
+    const now = new Date();
+    const horario = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    const data = now.toLocaleDateString('pt-BR');
+
+    const textoMensagem =
+`🍔 *NOVO PEDIDO* 🍔
+━━━━━━━━━━━━━━━━━━━━
+
+👤 *Cliente:* ${nome}
+🕐 *Horário:* ${data} às ${horario}
+
+━━━━━━━━━━━━━━━━━━━━
+🛒 *ITENS DO PEDIDO:*
+━━━━━━━━━━━━━━━━━━━━
+${itensFormatados}
+━━━━━━━━━━━━━━━━━━━━
+
+📍 *Endereço de Entrega:*
+${endereco}${observacoes}
+
+━━━━━━━━━━━━━━━━━━━━
+✅ Aguardo confirmação!`;
     
     const url = getWhatsappLink(textoMensagem);
     window.open(url, '_blank');
@@ -274,7 +294,9 @@ Observações: ${pedido}`;
                   height="100%" 
                   className="border-none" 
                   allowFullScreen
-                  loading="lazy"
+                  // loading="lazy" removido — não suportado no Safari iOS < 16.4.
+                  // O carregamento lazy já é gerenciado pelo IntersectionObserver acima (shouldLoadMap),
+                  // então este atributo é desnecessário e causava warning de compatibilidade.
                   referrerPolicy="no-referrer-when-downgrade"
                 />
               ) : (
