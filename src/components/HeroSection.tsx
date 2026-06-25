@@ -53,6 +53,8 @@ export function HeroSection() {
           src={slide.image.src}
           srcSet={slide.image.srcSet}
           sizes="100vw"
+          width={slide.image.width}
+          height={slide.image.height}
           alt={slide.image.alt}
           fetchPriority={index === 0 ? 'high' : 'auto'}
           decoding="async"
@@ -64,7 +66,7 @@ export function HeroSection() {
       ))}
 
       {/* Máscara escura de fundo */}
-      <div className="absolute inset-0 bg-black/75 z-10" />
+      <div className="absolute inset-0 bg-black/55 z-10" />
 
       {/* 2. Conteúdos Animados Individuais por Slide */}
       {heroSlides.map((slide, index) => {

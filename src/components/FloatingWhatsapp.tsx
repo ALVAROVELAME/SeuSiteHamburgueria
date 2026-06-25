@@ -2,9 +2,10 @@ import { getWhatsappLink } from '../data/config';
 
 interface FloatingWhatsappProps {
   message?: string;
+  hidden?: boolean;
 }
 
-export function FloatingWhatsapp({ message }: FloatingWhatsappProps) {
+export function FloatingWhatsapp({ message, hidden = false }: FloatingWhatsappProps) {
   // Utiliza o helper centralizado para gerar o link correto
   const whatsappLink = getWhatsappLink(message);
 
@@ -22,6 +23,8 @@ export function FloatingWhatsapp({ message }: FloatingWhatsappProps) {
         href={whatsappLink} 
         target="_blank" 
         rel="noopener noreferrer" 
+        hidden={hidden}
+        aria-hidden={hidden}
         className="fixed bottom-8 right-8 z-[100] bg-[#25D366] text-white p-5 rounded-full shadow-2xl animate-wpp-float hover:scale-110 transition-transform duration-300"
         aria-label="Falar no WhatsApp"
       >

@@ -1,19 +1,32 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test'
 
-test('verificar imagens responsivas', async ({ page }) => {
-  await page.goto('http://localhost:4173');
+test('imagetools gera imagens responsivas para os assets locais', async ({ page }) => {
+  await page.goto('/')
 
-  const images = await page.locator('img').all();
+  const images = page.locator('img')
+  const count = await images.count()
 
-  for (const img of images) {
-    const srcset = await img.getAttribute('srcset');
-    const sizes = await img.getAttribute('sizes');
-    const src = await img.getAttribute('src');
+  expect(count).toBeGreaterThan(0)
 
-    console.log('SRC:', src);
-    console.log('SRCSET:', srcset);
-    console.log('SIZES:', sizes);
+  for (let index = 0; index < count; index += 1) {
+    const img = images.nth(index)
+    const src = await img.getAttribute('src')
+    const srcset = await img.getAttribute('srcset')
+    const sizes = await img.getAttribute('sizes')
+    const width = await img.getAttribute('width')
+    const height = await img.getAttribute('height')
 
-    expect(src).toBeTruthy();
+    expect(src).toBeTruthy()
+    expect(src).not.toMatch(/^https?:\/\//)
+    expect(srcset).toBeTruthy()
+    expect(srcset).toContain('w')
+    expect(sizes).toBeTruthy()
+    expect(width).toBeTruthy()
+    expect(height).toBeTruthy()
+
+    await expect(img).toHaveJSProperty('complete', true)
+
+    const naturalWidth = await img.evaluate((element) => (element as HTMLImageElement).naturalWidth)
+    expect(naturalWidth).toBeGreaterThan(0)
   }
-});
+})

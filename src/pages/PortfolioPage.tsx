@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 import { Navbar } from '../components/Navbar';
 import { HeroSection } from '../components/HeroSection';
@@ -21,10 +21,47 @@ export default function PortfolioPage() {
   const [nome, setNome] = useState('');
   const [endereco, setEndereco] = useState('');
   const [pedido, setPedido] = useState('');
+  const [hideFloatingWhatsapp, setHideFloatingWhatsapp] = useState(false);
   
   const [itensPedido, setItensPedido] = useState<ItemPedido[]>([
     { id: Date.now(), nome: '', quantidade: 1 }
   ]);
+
+  useEffect(() => {
+    const formSection = document.getElementById('pedido');
+    if (!formSection) return;
+
+    const mediaQuery = window.matchMedia('(max-width: 1023px)');
+    let observer: IntersectionObserver | null = null;
+
+    const syncObserver = () => {
+      observer?.disconnect();
+
+      if (!mediaQuery.matches) {
+        setHideFloatingWhatsapp(false);
+        return;
+      }
+
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          setHideFloatingWhatsapp(entry.isIntersecting);
+        },
+        {
+          threshold: 0.2,
+        },
+      );
+
+      observer.observe(formSection);
+    };
+
+    syncObserver();
+    mediaQuery.addEventListener('change', syncObserver);
+
+    return () => {
+      observer?.disconnect();
+      mediaQuery.removeEventListener('change', syncObserver);
+    };
+  }, []);
 
   const adicionarItem = () => {
     setItensPedido([...itensPedido, { id: Date.now(), nome: '', quantidade: 1 }]);
@@ -209,7 +246,7 @@ Observações: ${pedido}`;
       </section>
 
       <Footer />
-      <FloatingWhatsapp />
+      <FloatingWhatsapp hidden={hideFloatingWhatsapp} />
     </div>
   );
 }
