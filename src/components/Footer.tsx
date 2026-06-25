@@ -35,7 +35,7 @@ export function Footer() {
           <div>
             <h3 className="text-white font-bold mb-6 uppercase tracking-widest text-sm">Sobre Nós</h3>
             <p className="text-sm leading-relaxed">
-              A verdadeira experiência do sabor premium. Qualidade e tradição em cada pedido.
+              Hambúrgueres artesanais com blends exclusivos e ingredientes selecionados. Bateu a fome? Não passe vontade, chame no WhatsApp e garanta o melhor burger da cidade quentinho na sua casa!
             </p>
           </div>
 
@@ -51,7 +51,7 @@ export function Footer() {
           <div>
             <h3 className="text-white font-bold mb-6 uppercase tracking-widest text-sm">Contato</h3>
             <div className="space-y-3 text-sm">
-              <p>Shopping Barra, Loja 45<br/>Salvador - BA</p>
+              <p>Shopping Barra, Sua Loja<br/>Salvador - BA</p>
               {/* Alterado de text-red-600 para text-red-400 para corrigir o contraste */}
               <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="block text-red-400 font-bold hover:text-white transition-colors">
                 (75) 9933-1557
