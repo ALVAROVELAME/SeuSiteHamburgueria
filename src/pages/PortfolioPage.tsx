@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 import { Navbar } from '../components/Navbar';
 import { HeroSection } from '../components/HeroSection';
@@ -22,9 +22,13 @@ export default function PortfolioPage() {
   const [endereco, setEndereco] = useState('');
   const [pedido, setPedido] = useState('');
   const [hideFloatingWhatsapp, setHideFloatingWhatsapp] = useState(false);
+  const [shouldLoadMap, setShouldLoadMap] = useState(false);
+  const mapContainerRef = useRef<HTMLDivElement | null>(null);
+  const nextItemIdRef = useRef(2);
+  const mapExternalLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(SITE_CONFIG.contact.address)}`;
   
   const [itensPedido, setItensPedido] = useState<ItemPedido[]>([
-    { id: Date.now(), nome: '', quantidade: 1 }
+    { id: 1, nome: '', quantidade: 1 }
   ]);
 
   useEffect(() => {
@@ -63,8 +67,36 @@ export default function PortfolioPage() {
     };
   }, []);
 
+  useEffect(() => {
+    const mapContainer = mapContainerRef.current;
+
+    if (!mapContainer || shouldLoadMap) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) {
+          return;
+        }
+
+        setShouldLoadMap(true);
+        observer.disconnect();
+      },
+      {
+        rootMargin: '300px 0px',
+      },
+    );
+
+    observer.observe(mapContainer);
+
+    return () => observer.disconnect();
+  }, [shouldLoadMap]);
+
   const adicionarItem = () => {
-    setItensPedido([...itensPedido, { id: Date.now(), nome: '', quantidade: 1 }]);
+    const nextId = nextItemIdRef.current;
+    nextItemIdRef.current += 1;
+    setItensPedido([...itensPedido, { id: nextId, nome: '', quantidade: 1 }]);
   };
 
   const removerItem = (id: number) => {
@@ -230,16 +262,36 @@ Observações: ${pedido}`;
           <div>
             <h3 className="text-3xl font-bold mb-2">Nossa Localização</h3>
             <p className="text-slate-300 mb-6">{SITE_CONFIG.contact.address}</p>
-            <div className="w-full h-[320px] sm:h-[420px] lg:h-[480px] rounded-2xl overflow-hidden border border-slate-700 bg-slate-800">
-              <iframe 
-                title="Localização do establishmento"
-                src={SITE_CONFIG.contact.mapLink}
-                width="100%" 
-                height="100%" 
-                className="border-none" 
-                allowFullScreen
-                referrerPolicy="no-referrer-when-downgrade"
-              />
+            <div
+              ref={mapContainerRef}
+              className="w-full h-[320px] sm:h-[420px] lg:h-[480px] rounded-2xl overflow-hidden border border-slate-700 bg-slate-800"
+            >
+              {shouldLoadMap ? (
+                <iframe 
+                  title="Localização do establishmento"
+                  src={SITE_CONFIG.contact.mapLink}
+                  width="100%" 
+                  height="100%" 
+                  className="border-none" 
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
+              ) : (
+                <div className="flex h-full flex-col items-center justify-center gap-4 bg-slate-900/80 px-6 text-center">
+                  <p className="max-w-sm text-sm text-slate-300">
+                    O mapa interativo sera carregado quando esta secao se aproximar da tela.
+                  </p>
+                  <a
+                    href={mapExternalLink}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="rounded-full border border-slate-500 px-5 py-3 text-sm font-semibold text-white transition-colors hover:border-red-400 hover:text-red-300"
+                  >
+                    Abrir no Google Maps
+                  </a>
+                </div>
+              )}
             </div>
           </div>
         </div>

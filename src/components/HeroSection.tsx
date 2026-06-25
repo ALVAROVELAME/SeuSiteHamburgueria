@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { getResponsiveImage } from '../utils/imageLoader';
 
+const heroImageSizes = '100vw';
+
 const heroSlides = [
   {
     image: getResponsiveImage('hero-churrasco.webp', 'Hamburgueria com comida na brasa'),
@@ -52,11 +54,12 @@ export function HeroSection() {
           key={index}
           src={slide.image.src}
           srcSet={slide.image.srcSet}
-          sizes="100vw"
+          sizes={heroImageSizes}
           width={slide.image.width}
           height={slide.image.height}
           alt={slide.image.alt}
-          fetchPriority={index === 0 ? 'high' : 'auto'}
+          fetchPriority={index === 0 ? 'high' : 'low'}
+          loading={index === 0 ? 'eager' : 'lazy'}
           decoding="async"
           className={`absolute inset-0 !w-full !h-full !object-cover object-center min-w-full min-h-full transition-all duration-1000 ease-in-out ${
             // 3. A imagem de fundo também só aparece se o componente estiver montado
